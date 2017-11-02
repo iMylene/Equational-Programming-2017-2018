@@ -1,7 +1,3 @@
-
-
-
-
 module Practicum1 where
 
 {-
