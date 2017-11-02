@@ -1,7 +1,3 @@
-
-
-
-
 module Practicum1 where
 
 {-
@@ -9,9 +5,10 @@ Name:           Mylène Martodihardjo
 VU-net id:      mmo440
 Student number: 2509676
 Discussed with: 
-Remarks:        
-Sources:        http://zvon.org/other/haskell/Outputprelude/foldr_f.html
-				http://learnyouahaskell.com/starting-out#an-intro-to-lists
+Remarks:        <In case something need special attention,
+                 please tell us>
+Sources:        http://learnyouahaskell.com/starting-out#an-intro-to-lists
+				http://zvon.org/other/haskell/Outputprelude/foldr_f.html
 -}
 
 -- Below you will find templates for the exercises. For each exercise,
@@ -28,7 +25,7 @@ maxi a b = if a >= b then a else b
 
 -- Exercise 2
 fourAscending :: Integer -> Integer -> Integer -> Integer -> Bool
-fourAscending a b c d = if (a<b) && (b<c) && (c<d) then True else False 
+fourAscending a b c d = if (a<b) && (b<c) && (c<d) then True else False
 
 -- fourAscending 1 2 3 4 == True
 -- fourAscending 1 2 3 3 == False
@@ -93,16 +90,20 @@ lengthListAlternative l =
     (h:t) -> 1 + (lengthListAlternative t)
 
 sumList :: [Integer] -> Integer
-sumList [] = 0
-sumList (h:t) = h + (sumList t)
+sumList l = 
+     case l of
+        [] -> 0
+        (h:t) -> h + (sumList t)
 
 -- sumList [1,2,3] == 6
 -- sumList [3,3,3] == 9
 
 -- Exercise 10
 doubleList :: [Integer] -> [Integer]
-doubleList [] = []
-doubleList (h:t) = 2*h:(doubleList t)
+doubleList l =
+     case l of
+        [] -> []
+        (h:t) -> (2*h:(doubleList t))
 
 -- doubleList [2,4,6] == [4,8,12]
 -- doubleList [3] == [6]
@@ -110,15 +111,15 @@ doubleList (h:t) = 2*h:(doubleList t)
 -- Exercise 11
 myappend :: [a] -> [a] -> [a]
 myappend listA [] = listA
-myappend listA (h:t) = myappend (reverse(h:reverse listA)) t
+myappend listA (headB:tailB) = myappend (reverse(headB:reverse listA)) tailB
 
--- myappend [1,2,3] [4,5,6]
--- myappend [4,5,6] [20]
+-- myappend [2,4,6] [3,5,7] == [2,4,6,3,5,7]
+-- myappend [5] [1,2,3] == [5,1,2,3]
 
 -- Exercise 12
 myreverse :: [a] -> [a]
 myreverse [] = []
-myreverse (h:t) = myappend (myreverse t) [h]
+myreverse (headA:tailA) = myappend (myreverse tailA) [headA]
 
 -- myreverse [9,8,7,6] == [6,7,8,9]
 -- myreverse [3,4,5] == [5,4,3]
@@ -126,7 +127,7 @@ myreverse (h:t) = myappend (myreverse t) [h]
 -- Exercise 13
 mymember :: (Eq a) => a -> [a] -> Bool
 mymember a [] = False
-mymember a (h:t) = if a==h then True else mymember a t
+mymember a (headB:tailB) = if a==headB then True else mymember a tailB
 
 -- mymember 5 [5,6,7] == True
 -- mymember 0 [5,6,7] == False
@@ -134,7 +135,7 @@ mymember a (h:t) = if a==h then True else mymember a t
 -- Exercise 14
 mysquaresum :: [Integer] -> Integer
 mysquaresum [] = 0
-mysquaresum (h:t) = h^2 + mysquaresum (t)
+mysquaresum (headA:tailA) = headA^2 + mysquaresum (tailA)
 
 -- mysquaresum [2,3] == 13
 -- mysquaresum [5,6,7] == 110
@@ -152,7 +153,7 @@ range a b =
 -- Exercise 16
 myconcat :: [[a]] -> [a]
 myconcat [] = []
-myconcat (h:t) = h ++ myconcat (t)
+myconcat (headA:tailA) = headA ++ myconcat (tailA)
 
 -- myconcat ["Hello","World","!"] == "HelloWorld!"
 -- myconcat [[3],[1],[4]] == [3,1,4]
@@ -164,21 +165,18 @@ insert a (h:t) =
      if a <= h
         then myconcat [[a], (h:t)]
         else myconcat [[h], insert a t] 
-        
--- insert 4 [1,2,3,5]
--- insert 7 [1,2,4,10]
-        
+
 insertionsort :: Ord a => [a] -> [a]
 insertionsort [] = []
-insertionsort (h:t) = insert h (insertionsort t) 
+insertionsort (headA:tailA) = insert headA (insertionsort tailA) 
 
--- insertionsort [1,3,2]
--- insertionsort [10, 8, 9 ,5]
+-- insert 5 [1,2,4,7,9] == [1,2,4,5,7,9]
+-- insertionsort [5,2,4,9,1,7] == [1,2,4,5,7,9]
 
 -- Exercise 18
 quicksort :: Ord a => [a] -> [a]
 quicksort [] = []
-quicksort (p:t) = quicksort (filter (\x -> x <= p) t) ++ (p:(quicksort (filter (\x -> x > p) t)))
+quicksort (pivotA:tailA) = quicksort (filter (\x -> x <= pivotA) tailA) ++ (pivotA:(quicksort (filter (\x -> x > pivotA) tailA)))
 
 -- quicksort [5,2,4,9,1,7] == [1,2,4,5,7,9]
 -- quicksort [7,6,5] == [5,6,7]
@@ -192,15 +190,15 @@ evensB a = [b | b <- a, (mod b 2) == 0]
 
 -- Exercise 20
 mymap :: (a -> b) -> [a] -> [b]
-mymap f [] = []
-mymap f (h:t) = f h:(mymap f t)
+mymap funcA [] = []
+mymap funcA (headA:tailA) = funcA headA:(mymap funcA tailA)
 
 -- mymap (\x -> x+10) [1,2,3] == [11,12,13]
 -- mymap (\x -> not x) [True,False,not True] == [False,True,True]
 
 -- Exercise 21
 twice :: (a -> a) -> a -> a
-twice f a = f (f a)
+twice funcA a = funcA (funcA a)
 
 -- twice (\x -> x+10) 3 == 23
 -- twice (\x -> not x) True == True
@@ -236,18 +234,18 @@ myinitb listA = take ((length listA)-1) listA
 
 -- Exercise 26
 mysecondconcat :: [[a]] -> [a]
-mysecondconcat listA = foldr (++) [] listA
+mysecondconcat listA = foldr (++)[] listA
 
 mysecondreverse :: [a] -> [a]
-mysecondreverse listA = foldr (\x y -> y ++ [x]) [] listA
+mysecondreverse listA = foldr (\x y -> y ++ [x] ) [] listA
 
--- mysecondconcat [[1,2,3],[5,6]] == [1,2,3,5,6]
--- mysecondreverse [1,2,3,4,5] == [5,4,3,2,1]
+-- mysecondconcat [[1,2,3],[5,6]] = [1,2,3,5,6]
+-- mysecondreverse [1,2,3,4,5] = [5,4,3,2,1]
 
 -- Exercise 27
 prefix :: [a] -> [[a]]
 prefix [] = [[]]
 prefix listA = (prefix (init listA)) ++ [listA]
 
--- prefix [1,2,3] == [[],[1],[1,2],[1,2,3]]
--- prefix [True,True,False] == [[],[True],[True,True],[True,True,False]]
+-- prefix [1,2,3] = [[],[1],[1,2],[1,2,3]]
+-- prefix [True,True,False] = [[],[True],[True,True],[True,True,False]]
