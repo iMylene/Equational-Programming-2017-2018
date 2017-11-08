@@ -4,7 +4,7 @@ module Practicum1 where
 Name:           Mylène Martodihardjo
 VU-net id:      mmo440
 Student number: 2509676
-Discussed with: 
+Discussed with: Saskia Kreuzen
 Remarks:        
 Sources:        http://zvon.org/other/haskell/Outputprelude/foldr_f.html
 				http://learnyouahaskell.com/starting-out#an-intro-to-lists
