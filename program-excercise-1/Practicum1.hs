@@ -20,7 +20,7 @@ maxi :: Integer -> Integer -> Integer
 maxi a b = if a >= b then a else b
 
 -- maxi 2 3 == 3
--- maxi 3 2 == 2
+-- maxi 3 2 == 3
 
 -- Exercise 2
 fourAscending :: Integer -> Integer -> Integer -> Integer -> Bool
