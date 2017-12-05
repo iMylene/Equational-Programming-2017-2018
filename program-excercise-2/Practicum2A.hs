@@ -156,6 +156,10 @@ sumnodes :: (Num a) => BinaryTree a -> a
 sumnodes Leaf = 0
 sumnodes (Node leafone x leaftwo) = 1 + (sumnodes leafone) + (sumnodes leaftwo)
 
+-- Feedback after grading:
+-- XXX: The point of sum nodes is "gives back as output the sum of all labels"
+-- XXX: Unfortunately, you have implemented "numberofnodes" twice!
+
 -- Exercise 4
 mirror :: BinaryTree a -> BinaryTree a
 mirror Leaf = Leaf
