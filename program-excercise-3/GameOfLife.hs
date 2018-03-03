@@ -3,6 +3,12 @@
 
 module Game where
 
+{-
+Name:           Mylène Martodihardjo
+VU-net id:      mmo440
+Student number: 2509676
+-}
+
 import Control.Applicative ((<$>), (<*>))
 import Control.Concurrent
 import Control.Monad
@@ -25,7 +31,6 @@ data Options  = Options { level    :: FilePath
                         , clean    :: Bool
                         , help     :: Bool}
 
-
 defaultOptions  = Options
   { level    = "simple.level"
   , alive    = 'x'
@@ -41,25 +46,45 @@ defaultOptions  = Options
 -- You may wish to use an auxiliary function for computing dead cells.
 
 -- | Algorithm implementation
+-- Returns a next generation if the world is not empty, otherwise it will return itself.
 nextGeneration :: World -> World
-nextGeneration w = undefined
+nextGeneration w | S.null w = w
+nextGeneration w = 
+  let stillAliveWorld = stillAliveCells w
+      reproducedWorld = reproducedCells w (deadCells w)
+  in S.union stillAliveWorld reproducedWorld
 
 -- | Helper functions
--- deadCells :: World -> World
--- deadCells w = undefined
+
+-- Returns a world of only dead neighbor cells
+deadCells :: World -> World
+deadCells w = 
+  let searchNeighbors = (\c -> neighbors c)
+      deadAliveWorld  = S.foldr (S.union . searchNeighbors) S.empty w
+  in S.difference deadAliveWorld w
+
+-- Returns a world where any live cell with two or three live neighbours keeps on living in the next generation.
+stillAliveCells :: World -> World
+stillAliveCells w =
+  let filterStillAliveCells = S.filter (\c -> (neighborCountIn c w == 2) || (neighborCountIn c w == 3))
+  in filterStillAliveCells w
+
+-- Returns a world where any dead cell with exactly three live neigbhours becomes a live cell.
+reproducedCells :: World -> World -> World
+reproducedCells originalWorld deadWorld =
+  let filterReproducedCells = S.filter (\c -> neighborCountIn c originalWorld == 3)
+  in filterReproducedCells deadWorld
 
 neighborCountIn :: Cell -> World -> Int
 neighborCountIn c w = size
                     $ intersection w
                     $ neighbors c
 
-
 neighbors :: Cell -> World
 neighbors l@(x,y) = fromList
                   $ L.filter (/=l)
                   $ (,) <$> r x <*> r y
   where r x = [x-1 .. x+1]
-
 
 -- | IO functions
 showWorld :: Options -> World -> String
